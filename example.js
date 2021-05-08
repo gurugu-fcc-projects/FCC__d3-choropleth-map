@@ -1,13 +1,15 @@
-// coded by @paycoguy & @ChristianPaul (github)
+/* global d3, topojson */
+/* eslint-disable max-len */
+
+// eslint-disable-next-line no-unused-vars
 const projectName = "choropleth";
-localStorage.setItem("example_project", "D3: Choropleth");
+
+// coded by @paycoguy & @ChristianPaul (github)
 
 // Define body
 var body = d3.select("body");
 
-var svg = d3.select("svg"),
-  width = +svg.attr("width"),
-  height = +svg.attr("height");
+var svg = d3.select("svg");
 
 // Define the div for the tooltip
 var tooltip = body
@@ -15,8 +17,6 @@ var tooltip = body
   .attr("class", "tooltip")
   .attr("id", "tooltip")
   .style("opacity", 0);
-
-var unemployment = d3.map();
 
 var path = d3.geoPath();
 
@@ -37,8 +37,12 @@ g.selectAll("rect")
   .data(
     color.range().map(function (d) {
       d = color.invertExtent(d);
-      if (d[0] == null) d[0] = x.domain()[0];
-      if (d[1] == null) d[1] = x.domain()[1];
+      if (d[0] === null) {
+        d[0] = x.domain()[0];
+      }
+      if (d[1] === null) {
+        d[1] = x.domain()[1];
+      }
       return d;
     })
   )
@@ -86,7 +90,9 @@ d3.queue()
   .await(ready);
 
 function ready(error, us, education) {
-  if (error) throw error;
+  if (error) {
+    throw error;
+  }
 
   svg
     .append("g")
@@ -101,23 +107,23 @@ function ready(error, us, education) {
     })
     .attr("data-education", function (d) {
       var result = education.filter(function (obj) {
-        return obj.fips == d.id;
+        return obj.fips === d.id;
       });
       if (result[0]) {
         return result[0].bachelorsOrHigher;
       }
-      //could not find a matching fips id in the data
+      // could not find a matching fips id in the data
       console.log("could find data for: ", d.id);
       return 0;
     })
     .attr("fill", function (d) {
       var result = education.filter(function (obj) {
-        return obj.fips == d.id;
+        return obj.fips === d.id;
       });
       if (result[0]) {
         return color(result[0].bachelorsOrHigher);
       }
-      //could not find a matching fips id in the data
+      // could not find a matching fips id in the data
       return color(0);
     })
     .attr("d", path)
@@ -126,7 +132,7 @@ function ready(error, us, education) {
       tooltip
         .html(function () {
           var result = education.filter(function (obj) {
-            return obj.fips == d.id;
+            return obj.fips === d.id;
           });
           if (result[0]) {
             return (
@@ -138,23 +144,23 @@ function ready(error, us, education) {
               "%"
             );
           }
-          //could not find a matching fips id in the data
+          // could not find a matching fips id in the data
           return 0;
         })
         .attr("data-education", function () {
           var result = education.filter(function (obj) {
-            return obj.fips == d.id;
+            return obj.fips === d.id;
           });
           if (result[0]) {
             return result[0].bachelorsOrHigher;
           }
-          //could not find a matching fips id in the data
+          // could not find a matching fips id in the data
           return 0;
         })
         .style("left", d3.event.pageX + 10 + "px")
         .style("top", d3.event.pageY - 28 + "px");
     })
-    .on("mouseout", function (d) {
+    .on("mouseout", function () {
       tooltip.style("opacity", 0);
     });
 
