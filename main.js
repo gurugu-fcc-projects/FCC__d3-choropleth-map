@@ -4,16 +4,30 @@ const countyDataUrl =
 const educationDataUrl =
   "https://cdn.freecodecamp.org/testable-projects-fcc/data/choropleth_map/for_user_education.json";
 
-d3.queue()
-  .defer(d3.json, countyDataUrl)
-  .defer(d3.json, educationDataUrl)
-  .awaitAll(function (err, res1, res2) {
-    if (err) throw err;
+//--> Set up main elements
+const path = d3.geoPath();
+const svg = d3
+  .select(".content")
+  .append("svg")
+  .attr("width", 1000)
+  .attr("height", 600);
 
-    console.log(res1);
-    console.log(res2);
-  });
+// d3.queue()
+//   .defer(d3.json, countyDataUrl)
+//   .defer(d3.json, educationDataUrl)
+//   .awaitAll(function (err, results) {
+//     if (err) throw err;
+
+//     console.log(results);
+//   });
 
 d3.json(countyDataUrl).then(res => {
-  console.log(res);
+  console.log(res.objects);
+  svg
+    .selectAll("path")
+    .data(topojson.feature(res, res.objects.nation).features)
+    .enter()
+    .append("path")
+    .attr("fill", "tomato")
+    .attr("d", path);
 });
