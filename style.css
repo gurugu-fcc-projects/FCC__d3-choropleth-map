@@ -38,6 +38,10 @@ body {
   width: 100%;
 }
 
+.content svg path {
+  fill: var(--bg-color);
+}
+
 .footer {
   padding: 10px;
   width: 100%;

@@ -21,13 +21,21 @@ const svg = d3
 //     console.log(results);
 //   });
 
-d3.json(countyDataUrl).then(res => {
-  console.log(res.objects);
+d3.json(countyDataUrl).then(topology => {
+  console.log(topology.objects);
   svg
     .selectAll("path")
-    .data(topojson.feature(res, res.objects.nation).features)
+    .data(topojson.feature(topology, topology.objects.states).features)
     .enter()
     .append("path")
-    .attr("fill", "tomato")
+    .attr("stroke", "tomato")
     .attr("d", path);
+
+  // svg
+  //   .selectAll("path")
+  //   .data(topojson.feature(res, res.objects.nation).features)
+  //   .enter()
+  //   .append("path")
+  //   .attr("fill", "tomato")
+  //   .attr("d", path);
 });
