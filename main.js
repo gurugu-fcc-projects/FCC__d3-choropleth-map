@@ -28,8 +28,9 @@ d3.json(countyDataUrl).then(topology => {
     .data(topojson.feature(topology, topology.objects.states).features)
     .enter()
     .append("path")
+    .attr("d", path)
     .attr("stroke", "tomato")
-    .attr("d", path);
+    .classed("county", true);
 
   // svg
   //   .selectAll("path")
