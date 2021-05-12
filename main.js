@@ -21,8 +21,12 @@ const svg = d3
 //     console.log(results);
 //   });
 
-d3.json(countyDataUrl).then(topology => {
-  console.log(topology.objects);
+const chart = async () => {
+  const [topology, edu] = await Promise.all([
+    d3.json(countyDataUrl),
+    d3.json(educationDataUrl),
+  ]);
+
   svg
     .selectAll("path")
     .data(topojson.feature(topology, topology.objects.states).features)
@@ -30,13 +34,8 @@ d3.json(countyDataUrl).then(topology => {
     .append("path")
     .attr("d", path)
     .attr("stroke", "tomato")
-    .classed("county", true);
+    .classed("county", true)
+    .attr("data-fips", d => d.id);
+};
 
-  // svg
-  //   .selectAll("path")
-  //   .data(topojson.feature(res, res.objects.nation).features)
-  //   .enter()
-  //   .append("path")
-  //   .attr("fill", "tomato")
-  //   .attr("d", path);
-});
+chart();
