@@ -29,13 +29,18 @@ const chart = async () => {
 
   svg
     .selectAll("path")
-    .data(topojson.feature(topology, topology.objects.states).features)
+    .data(topojson.feature(topology, topology.objects.counties).features)
     .enter()
     .append("path")
     .attr("d", path)
     .attr("stroke", "tomato")
     .classed("county", true)
-    .attr("data-fips", d => d.id);
+    .attr("data-fips", d => d.id)
+    .attr("data-education", d => {
+      const result = edu.find(item => item.fips === d.id);
+
+      return result.bachelorsOrHigher;
+    });
 };
 
 chart();
