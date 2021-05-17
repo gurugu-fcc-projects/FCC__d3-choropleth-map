@@ -59,24 +59,38 @@ const chart = async () => {
     });
 
   //--> Legend
+  const legendData = colorScale.range().map(d => {
+    d = colorScale.invertExtent(d);
+
+    if (!d[0]) d[0] = 0;
+    if (!d[1]) d[1] = eduMax;
+
+    return d;
+  });
+
+  const legendItemWidth = 40;
+  const legendItemHeight = 20;
+
   legend
     .selectAll("rect")
-    .data(
-      colorScale.range().map(d => {
-        d = colorScale.invertExtent(d);
-
-        if (!d[0]) d[0] = 0;
-        if (!d[1]) d[1] = eduMax;
-
-        return d;
-      })
-    )
+    .data(legendData)
     .enter()
     .append("rect")
-    .attr("x", (_, i) => i * 40)
-    .attr("width", 40)
-    .attr("height", 20)
+    .classed("legend-item", true)
+    .attr("x", (_, i) => i * legendItemWidth)
+    .attr("width", legendItemWidth)
+    .attr("height", legendItemHeight)
     .attr("fill", d => colorScale(d[0]));
+
+  legend
+    .selectAll("text")
+    .data(legendData)
+    .enter()
+    .append("text")
+    .classed("legend-item-text", true)
+    .attr("x", (_, i) => (i + 1) * legendItemWidth - 7)
+    .attr("y", legendItemHeight * 2 - 5)
+    .text(d => `${Math.round(d[1])}%`);
 };
 
 chart();

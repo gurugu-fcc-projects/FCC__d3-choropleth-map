@@ -61,3 +61,16 @@ body {
 #description {
   text-align: center;
 }
+
+.legend-item {
+  cursor: pointer;
+}
+
+.legend-item:hover {
+  stroke: var(--legend-select-color);
+}
+
+.legend-item-text {
+  font-size: 0.75rem;
+  fill: var(--text-color-2);
+}
