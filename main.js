@@ -92,7 +92,7 @@ const chart = async () => {
       tooltip.style("opacity", 0);
     });
 
-  //--> Legend
+  //--> Legend - preparation
   const legendData = colorScale.range().map(d => {
     d = colorScale.invertExtent(d);
 
@@ -105,6 +105,7 @@ const chart = async () => {
   const legendItemWidth = 40;
   const legendItemHeight = 20;
 
+  //--> Legend - display
   legend
     .selectAll("rect")
     .data(legendData)
