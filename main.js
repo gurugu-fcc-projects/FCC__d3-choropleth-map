@@ -21,6 +21,14 @@ const legend = svg
   .attr("id", "legend")
   .attr("transform", `translate(${width / 2}, 20)`);
 
+//--> Add description
+d3.select("header")
+  .append("h4")
+  .text(
+    "Percentage of adults age 25 and older with a bachelor's degree or higher (2010-2014)"
+  )
+  .attr("id", "description");
+
 //--> Load data
 const chart = async () => {
   const [topology, edu] = await Promise.all([
