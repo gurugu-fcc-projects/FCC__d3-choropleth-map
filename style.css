@@ -59,11 +59,12 @@ body {
 }
 
 .legend-item {
+  opacity: 0.8;
   cursor: pointer;
 }
 
 .legend-item:hover {
-  stroke: var(--legend-select-color);
+  opacity: 1;
 }
 
 .legend-item-text {
