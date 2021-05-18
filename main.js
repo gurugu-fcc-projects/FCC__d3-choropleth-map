@@ -38,9 +38,10 @@ const chart = async () => {
   //--> Color scale
   const colorScale = d3
     .scaleThreshold()
-    .domain(d3.range(eduMin, eduMax, (eduMax - eduMin) / 8))
-    .range(d3.schemeReds[9]);
+    .domain(d3.range(eduMin, 100, 100 / 7))
+    .range(d3.schemeBlues[8]);
 
+  console.log(colorScale.domain());
   //--> Normalize land data
   const landDataNormalized = landData.map(d => {
     const result = edu.find(item => item.fips === d.id);
@@ -52,8 +53,6 @@ const chart = async () => {
     };
   });
 
-  console.log(landDataNormalized);
-
   //--> Display geo data
   svg
     .selectAll("path")
@@ -61,7 +60,7 @@ const chart = async () => {
     .enter()
     .append("path")
     .attr("d", path)
-    .attr("stroke", "tomato")
+    .attr("stroke", "lightblue")
     .attr("fill", d => d.fill)
     .classed("county", true)
     .attr("data-fips", d => d.id)
@@ -70,9 +69,9 @@ const chart = async () => {
   //--> Legend
   const legendData = colorScale.range().map(d => {
     d = colorScale.invertExtent(d);
-
+    console.log(d);
     if (!d[0]) d[0] = 0;
-    if (!d[1]) d[1] = eduMax;
+    if (!d[1]) d[1] = 100;
 
     return d;
   });
