@@ -29,6 +29,9 @@ d3.select("header")
   )
   .attr("id", "description");
 
+//--> Add tooltip
+const tooltip = d3.select(".content").append("div").attr("id", "tooltip");
+
 //--> Load data
 const chart = async () => {
   const [topology, edu] = await Promise.all([
@@ -49,7 +52,6 @@ const chart = async () => {
     .domain(d3.range(eduMin, 100, 100 / 7))
     .range(d3.schemeBlues[8]);
 
-  console.log(colorScale.domain());
   //--> Normalize land data
   const landDataNormalized = landData.map(d => {
     const result = edu.find(item => item.fips === d.id);
@@ -58,6 +60,7 @@ const chart = async () => {
       ...d,
       fill: colorScale(result.bachelorsOrHigher),
       edu: result.bachelorsOrHigher,
+      location: `${result.area_name}, ${result.state}`,
     };
   });
 
@@ -72,12 +75,27 @@ const chart = async () => {
     .attr("fill", d => d.fill)
     .classed("county", true)
     .attr("data-fips", d => d.id)
-    .attr("data-education", d => d.edu);
+    .attr("data-education", d => d.edu)
+    .attr("data-location", d => d.location)
+    .on("mouseover", function (e) {
+      const bachelorsOrHigher = this.getAttribute("data-education");
+      const location = this.getAttribute("data-location");
+
+      tooltip
+        .style("opacity", 0.9)
+        .style("left", `${e.clientX}px`)
+        .style("top", `${e.clientY}px`)
+        .attr("data-education", bachelorsOrHigher)
+        .html(`${location}: ${bachelorsOrHigher}%`);
+    })
+    .on("mouseout", () => {
+      tooltip.style("opacity", 0);
+    });
 
   //--> Legend
   const legendData = colorScale.range().map(d => {
     d = colorScale.invertExtent(d);
-    console.log(d);
+
     if (!d[0]) d[0] = 0;
     if (!d[1]) d[1] = 100;
 
