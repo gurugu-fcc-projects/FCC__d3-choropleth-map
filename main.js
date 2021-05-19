@@ -61,6 +61,7 @@ const chart = async () => {
       fill: colorScale(result.bachelorsOrHigher),
       edu: result.bachelorsOrHigher,
       location: `${result.area_name}, ${result.state}`,
+      selected: true,
     };
   });
 
@@ -72,7 +73,8 @@ const chart = async () => {
     .append("path")
     .attr("d", path)
     .attr("fill", d => d.fill)
-    .classed("county", true)
+    .attr("class", "county")
+    .classed("non-selected", d => d.selected)
     .attr("data-fips", d => d.id)
     .attr("data-education", d => d.edu)
     .attr("data-location", d => d.location)
@@ -82,19 +84,13 @@ const chart = async () => {
 
       tooltip
         .style("opacity", 0.9)
-        .style("left", `${e.clientX + 20}px`)
-        .style("top", `${e.clientY + 10}px`)
+        .style("left", `${e.clientX + 10}px`)
+        .style("top", `${e.clientY + 5}px`)
         .attr("data-education", bachelorsOrHigher)
         .html(`${location}: ${bachelorsOrHigher}%`);
-      console.log(d3.select(this));
-
-      d3.select(this).transition().duration("50").style("opacity", 0.75);
     })
     .on("mouseout", function (e) {
       tooltip.style("opacity", 0);
-
-      console.log(d3.select(this));
-      d3.select(this).transition().duration("50").style("opacity", 1);
     });
 
   //--> Legend - preparation
