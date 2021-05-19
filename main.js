@@ -71,7 +71,6 @@ const chart = async () => {
     .enter()
     .append("path")
     .attr("d", path)
-    .attr("stroke", "lightblue")
     .attr("fill", d => d.fill)
     .classed("county", true)
     .attr("data-fips", d => d.id)
@@ -83,13 +82,19 @@ const chart = async () => {
 
       tooltip
         .style("opacity", 0.9)
-        .style("left", `${e.clientX}px`)
-        .style("top", `${e.clientY}px`)
+        .style("left", `${e.clientX + 20}px`)
+        .style("top", `${e.clientY + 10}px`)
         .attr("data-education", bachelorsOrHigher)
         .html(`${location}: ${bachelorsOrHigher}%`);
+      console.log(d3.select(this));
+
+      d3.select(this).transition().duration("50").style("opacity", 0.75);
     })
-    .on("mouseout", () => {
+    .on("mouseout", function (e) {
       tooltip.style("opacity", 0);
+
+      console.log(d3.select(this));
+      d3.select(this).transition().duration("50").style("opacity", 1);
     });
 
   //--> Legend - preparation

@@ -16,6 +16,7 @@ body {
   --text-color: rgb(240, 240, 240);
   --text-color-2: rgb(212, 186, 186);
   --legend-select-color: #fff;
+  --county-border: lightblue;
 }
 
 body {
@@ -89,4 +90,8 @@ header {
 .legend-item-text {
   font-size: 0.75rem;
   fill: var(--text-color-2);
+}
+
+.county {
+  stroke: var(--county-border);
 }
