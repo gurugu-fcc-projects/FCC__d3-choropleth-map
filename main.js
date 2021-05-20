@@ -53,7 +53,7 @@ const chart = async () => {
     .range(d3.schemeBlues[8]);
 
   //--> Normalize land data
-  let landDataNormalized = landData.map(d => {
+  const landDataNormalized = landData.map(d => {
     const result = edu.find(item => item.fips === d.id);
 
     return {
@@ -128,13 +128,22 @@ const chart = async () => {
     .on("click", function (e) {
       const lowerThreshold = this.getAttribute("data-lowerThreshold");
       const higherThreshold = this.getAttribute("data-higherThreshold");
+      const allLegendItems = document.querySelectorAll(".legend-item");
 
-      landDataNormalized = landDataNormalized.map(item => ({
-        ...item,
-        selected: item.edu >= lowerThreshold && item.edu <= higherThreshold,
-      }));
+      if (this.classList.contains("selected")) {
+        this.classList.toggle("selected");
+        drawMap(landDataNormalized);
+      } else {
+        allLegendItems.forEach(item => item.classList.remove("selected"));
+        this.classList.toggle("selected");
 
-      drawMap(landDataNormalized);
+        const filteredData = landDataNormalized.map(item => ({
+          ...item,
+          selected: item.edu >= lowerThreshold && item.edu <= higherThreshold,
+        }));
+
+        drawMap(filteredData);
+      }
     });
 
   legend
