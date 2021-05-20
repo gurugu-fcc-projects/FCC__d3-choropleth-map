@@ -15,7 +15,7 @@ body {
   --bg-color-2: rgb(65, 61, 61);
   --text-color: rgb(240, 240, 240);
   --text-color-2: rgb(212, 186, 186);
-  --legend-select-color: #ff76ee;
+  --legend-select-color: #fff;
   --county-border: rgb(65, 65, 65);
 }
 
@@ -88,6 +88,7 @@ header {
 }
 
 .legend-item.selected {
+  opacity: 1;
   fill: var(--legend-select-color);
 }
 
