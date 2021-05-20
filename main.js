@@ -65,15 +65,53 @@ const chart = async () => {
     };
   });
 
+  //--> Helper functions
+  function showTooltip(e) {
+    const bachelorsOrHigher = this.getAttribute("data-education");
+    const location = this.getAttribute("data-location");
+
+    tooltip
+      .style("opacity", 0.9)
+      .style("left", `${e.clientX + 10}px`)
+      .style("top", `${e.clientY + 5}px`)
+      .attr("data-education", bachelorsOrHigher)
+      .html(`${location}: ${bachelorsOrHigher}%`);
+  }
+
+  function hideTooltip() {
+    tooltip.style("opacity", 0);
+  }
+
+  function selectLegendItem() {
+    const lowerThreshold = this.getAttribute("data-lowerThreshold");
+    const higherThreshold = this.getAttribute("data-higherThreshold");
+    const allLegendItems = document.querySelectorAll(".legend-item");
+
+    if (this.classList.contains("selected")) {
+      this.classList.toggle("selected");
+      drawMap(landDataNormalized);
+    } else {
+      allLegendItems.forEach(item => item.classList.remove("selected"));
+      this.classList.toggle("selected");
+
+      const filteredData = landDataNormalized.map(item => ({
+        ...item,
+        selected: item.edu >= lowerThreshold && item.edu <= higherThreshold,
+      }));
+
+      drawMap(filteredData);
+    }
+  }
+
   //--> Display geo data
   const drawMap = data => {
     svg
       .selectAll("path")
       .data(data)
       .join(
-        enter => enter.append("path"),
+        enter => enter.append("path").style("opacity", 0),
         update => update,
-        exit => exit
+        exit => exit.transition().duration(400).style("opacity", 0)
       )
       .attr("d", path)
       .attr("fill", d => (d.selected ? d.fill : "rgb(37 33 33)"))
@@ -81,20 +119,11 @@ const chart = async () => {
       .attr("data-fips", d => d.id)
       .attr("data-education", d => d.edu)
       .attr("data-location", d => d.location)
-      .on("mouseover", function (e) {
-        const bachelorsOrHigher = this.getAttribute("data-education");
-        const location = this.getAttribute("data-location");
-
-        tooltip
-          .style("opacity", 0.9)
-          .style("left", `${e.clientX + 10}px`)
-          .style("top", `${e.clientY + 5}px`)
-          .attr("data-education", bachelorsOrHigher)
-          .html(`${location}: ${bachelorsOrHigher}%`);
-      })
-      .on("mouseout", function (e) {
-        tooltip.style("opacity", 0);
-      });
+      .on("mouseover", showTooltip)
+      .on("mouseout", hideTooltip)
+      .transition()
+      .duration(400)
+      .style("opacity", 1);
   };
 
   drawMap(landDataNormalized);
@@ -125,26 +154,7 @@ const chart = async () => {
     .attr("fill", d => colorScale(d[0]))
     .attr("data-lowerThreshold", d => d[0].toFixed(2))
     .attr("data-higherThreshold", d => d[1].toFixed(2))
-    .on("click", function (e) {
-      const lowerThreshold = this.getAttribute("data-lowerThreshold");
-      const higherThreshold = this.getAttribute("data-higherThreshold");
-      const allLegendItems = document.querySelectorAll(".legend-item");
-
-      if (this.classList.contains("selected")) {
-        this.classList.toggle("selected");
-        drawMap(landDataNormalized);
-      } else {
-        allLegendItems.forEach(item => item.classList.remove("selected"));
-        this.classList.toggle("selected");
-
-        const filteredData = landDataNormalized.map(item => ({
-          ...item,
-          selected: item.edu >= lowerThreshold && item.edu <= higherThreshold,
-        }));
-
-        drawMap(filteredData);
-      }
-    });
+    .on("click", selectLegendItem);
 
   legend
     .selectAll("text")
