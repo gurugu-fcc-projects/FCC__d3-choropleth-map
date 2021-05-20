@@ -16,7 +16,7 @@ body {
   --text-color: rgb(240, 240, 240);
   --text-color-2: rgb(212, 186, 186);
   --legend-select-color: #fff;
-  --county-border: lightblue;
+  --county-border: rgb(65 65 65);
 }
 
 body {

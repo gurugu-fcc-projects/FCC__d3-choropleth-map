@@ -53,7 +53,7 @@ const chart = async () => {
     .range(d3.schemeBlues[8]);
 
   //--> Normalize land data
-  const landDataNormalized = landData.map(d => {
+  let landDataNormalized = landData.map(d => {
     const result = edu.find(item => item.fips === d.id);
 
     return {
@@ -66,31 +66,38 @@ const chart = async () => {
   });
 
   //--> Display geo data
-  svg
-    .selectAll("path")
-    .data(landDataNormalized)
-    .enter()
-    .append("path")
-    .attr("d", path)
-    .attr("fill", d => (d.selected ? "rgb(37 33 33)" : d.fill))
-    .attr("class", "county")
-    .attr("data-fips", d => d.id)
-    .attr("data-education", d => d.edu)
-    .attr("data-location", d => d.location)
-    .on("mouseover", function (e) {
-      const bachelorsOrHigher = this.getAttribute("data-education");
-      const location = this.getAttribute("data-location");
+  const drawMap = data => {
+    svg
+      .selectAll("path")
+      .data(data)
+      .join(
+        enter => enter.append("path"),
+        update => update,
+        exit => exit
+      )
+      .attr("d", path)
+      .attr("fill", d => (d.selected ? d.fill : "rgb(37 33 33)"))
+      .attr("class", "county")
+      .attr("data-fips", d => d.id)
+      .attr("data-education", d => d.edu)
+      .attr("data-location", d => d.location)
+      .on("mouseover", function (e) {
+        const bachelorsOrHigher = this.getAttribute("data-education");
+        const location = this.getAttribute("data-location");
 
-      tooltip
-        .style("opacity", 0.9)
-        .style("left", `${e.clientX + 10}px`)
-        .style("top", `${e.clientY + 5}px`)
-        .attr("data-education", bachelorsOrHigher)
-        .html(`${location}: ${bachelorsOrHigher}%`);
-    })
-    .on("mouseout", function (e) {
-      tooltip.style("opacity", 0);
-    });
+        tooltip
+          .style("opacity", 0.9)
+          .style("left", `${e.clientX + 10}px`)
+          .style("top", `${e.clientY + 5}px`)
+          .attr("data-education", bachelorsOrHigher)
+          .html(`${location}: ${bachelorsOrHigher}%`);
+      })
+      .on("mouseout", function (e) {
+        tooltip.style("opacity", 0);
+      });
+  };
+
+  drawMap(landDataNormalized);
 
   //--> Legend - preparation
   const legendData = colorScale.range().map(d => {
@@ -115,7 +122,20 @@ const chart = async () => {
     .attr("x", (_, i) => i * legendItemWidth)
     .attr("width", legendItemWidth)
     .attr("height", legendItemHeight)
-    .attr("fill", d => colorScale(d[0]));
+    .attr("fill", d => colorScale(d[0]))
+    .attr("data-lowerThreshold", d => d[0].toFixed(2))
+    .attr("data-higherThreshold", d => d[1].toFixed(2))
+    .on("click", function (e) {
+      const lowerThreshold = this.getAttribute("data-lowerThreshold");
+      const higherThreshold = this.getAttribute("data-higherThreshold");
+
+      landDataNormalized = landDataNormalized.map(item => ({
+        ...item,
+        selected: item.edu >= lowerThreshold && item.edu <= higherThreshold,
+      }));
+
+      drawMap(landDataNormalized);
+    });
 
   legend
     .selectAll("text")
