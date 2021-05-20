@@ -85,22 +85,26 @@ const chart = async () => {
   function selectLegendItem() {
     const lowerThreshold = this.getAttribute("data-lowerThreshold");
     const higherThreshold = this.getAttribute("data-higherThreshold");
-    const allLegendItems = document.querySelectorAll(".legend-item");
+
+    let updatedData = null;
 
     if (this.classList.contains("selected")) {
-      this.classList.toggle("selected");
-      drawMap(landDataNormalized);
+      this.classList.remove("selected");
+      updatedData = landDataNormalized;
     } else {
-      allLegendItems.forEach(item => item.classList.remove("selected"));
-      this.classList.toggle("selected");
+      const selectedItem = document.querySelector(".legend-item.selected");
 
-      const filteredData = landDataNormalized.map(item => ({
+      if (selectedItem) selectedItem.classList.remove("selected");
+
+      this.classList.add("selected");
+
+      updatedData = landDataNormalized.map(item => ({
         ...item,
         selected: item.edu >= lowerThreshold && item.edu <= higherThreshold,
       }));
-
-      drawMap(filteredData);
     }
+
+    drawMap(updatedData);
   }
 
   //--> Display geo data
