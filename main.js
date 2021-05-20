@@ -107,8 +107,7 @@ const chart = async () => {
     drawMap(updatedData);
   }
 
-  //--> Display geo data
-  const drawMap = data => {
+  function drawMap(data) {
     svg
       .selectAll("path")
       .data(data)
@@ -128,11 +127,9 @@ const chart = async () => {
       .transition()
       .duration(400)
       .style("opacity", 1);
-  };
+  }
 
-  drawMap(landDataNormalized);
-
-  //--> Legend - preparation
+  //--> Legend
   const legendData = colorScale.range().map(d => {
     d = colorScale.invertExtent(d);
 
@@ -145,7 +142,6 @@ const chart = async () => {
   const legendItemWidth = 40;
   const legendItemHeight = 20;
 
-  //--> Legend - display
   legend
     .selectAll("rect")
     .data(legendData)
@@ -169,6 +165,8 @@ const chart = async () => {
     .attr("x", (_, i) => (i + 1) * legendItemWidth - 7)
     .attr("y", legendItemHeight * 2 - 5)
     .text(d => `${Math.round(d[1])}%`);
+
+  drawMap(landDataNormalized);
 };
 
 chart();
