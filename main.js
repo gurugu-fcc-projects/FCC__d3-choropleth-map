@@ -44,7 +44,7 @@ const chart = async () => {
   ).features;
 
   //--> Min and max education values
-  const [eduMin, eduMax] = d3.extent(edu, d => d.bachelorsOrHigher);
+  const eduMin = d3.min(edu, d => d.bachelorsOrHigher);
 
   //--> Color scale
   const colorScale = d3
