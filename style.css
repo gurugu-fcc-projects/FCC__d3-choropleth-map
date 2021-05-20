@@ -95,13 +95,3 @@ header {
 .county {
   stroke: var(--county-border);
 }
-.county:hover {
-  opacity: 0.75;
-}
-
-.county.non-selected {
-  opacity: 0.3;
-}
-.county.non-selected:hover {
-  opacity: 0.2;
-}
