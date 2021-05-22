@@ -110,23 +110,32 @@ const chart = async () => {
   function drawMap(data) {
     svg
       .selectAll("path")
-      .data(data)
+      .data(data, d => d.id)
       .join(
-        enter => enter.append("path").style("opacity", 0),
-        update => update,
-        exit => exit.transition().duration(400).style("opacity", 0)
-      )
-      .attr("d", path)
-      .attr("fill", d => (d.selected ? d.fill : "rgb(37 33 33)"))
-      .attr("class", "county")
-      .attr("data-fips", d => d.id)
-      .attr("data-education", d => d.edu)
-      .attr("data-location", d => d.location)
-      .on("mouseover", showTooltip)
-      .on("mouseout", hideTooltip)
-      .transition()
-      .duration(400)
-      .style("opacity", 1);
+        enter =>
+          enter
+            .append("path")
+            .attr("d", path)
+            .attr("class", "county")
+            .attr("data-fips", d => d.id)
+            .attr("data-education", d => d.edu)
+            .attr("data-location", d => d.location)
+            .on("mouseover", showTooltip)
+            .on("mouseout", hideTooltip)
+            .call(enter =>
+              enter
+                .transition()
+                .duration(650)
+                .style("fill", d => d.fill)
+            ),
+        update =>
+          update.call(update =>
+            update
+              .transition()
+              .duration(650)
+              .style("fill", d => (d.selected ? d.fill : "rgb(37 33 33)"))
+          )
+      );
   }
 
   //--> Legend
