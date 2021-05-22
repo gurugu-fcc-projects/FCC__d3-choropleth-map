@@ -7,7 +7,7 @@ See project requirements at [this freecodecamp page](https://www.freecodecamp.or
 
 ## Demo
 
-![](https://github.com/gurugu-fcc-projects/FCC__d3-choropleth-map/blob/master/fcc__d3_heat_map.gif)
+![](https://github.com/gurugu-fcc-projects/FCC__d3-choropleth-map/blob/master/fcc__d3_choropleth-map.gif)
 
 ## Features
 
